@@ -3,9 +3,23 @@
 #include <string>
 #include <map>
 #include <iomanip>
+#include <set>
 
 
 using namespace std;
+
+//reference material http://www.techiedelight.com/sort-map-values-cpp/
+struct comp
+{
+	template<typename T>
+	bool operator()(const T& left, const T& right) const
+	{
+		if (left.second != right.second)
+			return left.second > right.second;
+	
+		return left.first > right.first;
+	}
+};
 
 void First_Word_Count()
 {
@@ -88,11 +102,15 @@ void First_Word_Count()
 		}
 	}
 	
+	set<pair<string, int>, comp> set(reduced_content.begin(), reduced_content.end());
 	
 	//for (map<string,int>::iterator it = content.begin(); it != content.end(); it++)
 	//	cout << left << setw(30) << it->first << it->second << endl;
-	for (map<string,int>::iterator it = reduced_content.begin(); it != reduced_content.end(); it++)
-		cout << left << setw(30) << it->first << it->second << endl;
+	//for (map<string,int>::iterator it = reduced_content.begin(); it != reduced_content.end(); it++)
+	//	cout << left << setw(30) << it->first << it->second << endl;
+
+	for (auto const &pair: set)
+		cout << left << setw(30) << pair.first << pair.second << endl;
 	//cout << content << " " << word_count <<endl;
 
 	input_file.close();
