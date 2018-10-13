@@ -6,8 +6,6 @@
 
 
 using namespace std;
-string removespace(string str);
-
 
 void First_Word_Count()
 {
@@ -31,7 +29,7 @@ void First_Word_Count()
 		//getline(input_file, content);
 		string temp; 
 		input_file >> temp;
-		temp = removespace(temp);
+
 		for (int i = 0; i < temp.size(); ++i)
 		{
 			temp[i] = tolower(temp[i]); //convert everything into lower cases
@@ -45,13 +43,22 @@ void First_Word_Count()
 				}
 				else
 				{
-					temp[i] = '\0';
+					temp = ':';
 				}
 			}
 		}
+
+		size_t found = temp.find_first_of(":");
+		if (found != string::npos)
+		{
+			temp = temp.substr(0, found);
+		}
 		
-		if (temp != "\0" && temp != "-")
-			content.insert(pair<string, int>(temp, 1));
+		if (temp != "\0" && temp != "-") //remove stand along character
+		{
+				content.insert(pair<string, int>(temp, 1));
+		}
+			
 		//cout << temp << endl;
 		//content.push_back(temp.substr());
 		word_count++;
@@ -59,12 +66,12 @@ void First_Word_Count()
 
 	map<string, int> reduced_content;
 	string current_content = "a";
-	int similar_count = 0;
+	int similar_count = 1; //since its registered in map, it means the least count it will have is 1
 	for (map<string, int>::iterator it = content.begin(); it != content.end(); it++)
 	{
 		if (it->first != current_content)
 		{
-			if (similar_count > 1)
+			if (current_content == "a") //because the first "a" will be passing into the eqaul statement while it only has 1 "a"
 				reduced_content.insert(pair<string, int>(current_content, similar_count - 1));
 			else
 				reduced_content.insert(pair<string, int>(current_content, similar_count));
@@ -91,18 +98,6 @@ void First_Word_Count()
 	input_file.close();
 }
 
-string removespace(string str)
-{
-	int count = 0;
-	for (int i = 0; str[i]; i++)
-	{
-		if (str[i] != ' ')
-			str[count++] = str[i];
-	}
-
-	str[count] = '\0';
-	return str;
-}
 
 int main()
 {
