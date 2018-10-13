@@ -2,17 +2,18 @@
 #include <fstream>
 #include <string>
 #include <map>
-#include <unordered_map>
-#include <iterator>
+#include <iomanip>
 
 
 using namespace std;
+string removespace(string str);
+
 
 void First_Word_Count()
 {
 	ifstream input_file;
 	string filename;
-	map <string, int> content;
+	multimap <string, int> content;
 
 	do
 	{
@@ -24,36 +25,84 @@ void First_Word_Count()
 	} while (input_file.fail());
 
 	int word_count = 0;
-	string delimiter = "\".?,";
-
+	
 	while (!input_file.eof())
 	{
 		//getline(input_file, content);
 		string temp; 
 		input_file >> temp;
+		temp = removespace(temp);
 		for (int i = 0; i < temp.size(); ++i)
 		{
-			temp[i] = tolower(temp[i]);
-			if (!((temp[i] >= 'a' && temp[i] <= 'z') || (temp[i] == '\'')))
+			temp[i] = tolower(temp[i]); //convert everything into lower cases
+
+			if (!((temp[i] >= 'a' && temp[i] <= 'z') || (temp[i] == '\'') || (temp[i] == '-')))
 			{
-				temp[i] = '\0';
+				if (i == 0)
+				{
+					temp = temp.substr(1, temp.size());
+					temp[i] = tolower(temp[i]); //since the first character has been replaced, need to make sure it's also lower cased
+				}
+				else
+				{
+					temp[i] = '\0';
+				}
 			}
 		}
 		
-		content.insert(pair<string, int>(temp, 1));
+		if (temp != "\0" && temp != "-")
+			content.insert(pair<string, int>(temp, 1));
 		//cout << temp << endl;
 		//content.push_back(temp.substr());
 		word_count++;
 	}
 
-	for (map<string,int>::iterator it = content.begin(); it != content.end(); it++)
-		cout << it->first << "	 =>  " << it->second << endl;
-	//cout << content << " " << word_count <<endl;
+	map<string, int> reduced_content;
+	string current_content = "a";
+	int similar_count = 0;
+	for (map<string, int>::iterator it = content.begin(); it != content.end(); it++)
+	{
+		if (it->first != current_content)
+		{
+			if (similar_count > 1)
+				reduced_content.insert(pair<string, int>(current_content, similar_count - 1));
+			else
+				reduced_content.insert(pair<string, int>(current_content, similar_count));
 
+			current_content = it->first; //update for the next comparison
+			similar_count = 1; //reset the count because a new key has arrived
+
+			//cout << current_content << endl;
+		}
+		else if (it->first == current_content)
+		{
+			similar_count++; //adding one for similar count
+			//cout << current_content << endl;
+		}
+	}
+	
+	
+	//for (map<string,int>::iterator it = content.begin(); it != content.end(); it++)
+	//	cout << left << setw(30) << it->first << it->second << endl;
+	for (map<string,int>::iterator it = reduced_content.begin(); it != reduced_content.end(); it++)
+		cout << left << setw(30) << it->first << it->second << endl;
+	//cout << content << " " << word_count <<endl;
 
 	input_file.close();
 }
 
+string removespace(string str)
+{
+	int count = 0;
+	for (int i = 0; str[i]; i++)
+	{
+		if (str[i] != ' ')
+			str[count++] = str[i];
+	}
+
+	str[count] = '\0';
+	return str;
+}
 
 int main()
 {
