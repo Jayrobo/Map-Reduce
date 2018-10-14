@@ -57,7 +57,7 @@ void First_Word_Count()
 				}
 				else
 				{
-					temp = ':';
+					temp[i] = ':';
 				}
 			}
 		}
@@ -65,7 +65,7 @@ void First_Word_Count()
 		size_t found = temp.find_first_of(":");
 		if (found != string::npos)
 		{
-			temp = temp.substr(0, found);
+			temp = temp.substr(0, found); //to make sure the word doesn't include other symbols 
 		}
 		
 		if (temp != "\0" && temp != "-") //remove stand along character
@@ -109,9 +109,10 @@ void First_Word_Count()
 	//for (map<string,int>::iterator it = reduced_content.begin(); it != reduced_content.end(); it++)
 	//	cout << left << setw(30) << it->first << it->second << endl;
 
-	for (auto const &pair: set)
+	for (auto const &pair: set) //tried to manually produce the auto type but idk how
 		cout << left << setw(30) << pair.first << pair.second << endl;
 	//cout << content << " " << word_count <<endl;
+
 
 	input_file.close();
 }
