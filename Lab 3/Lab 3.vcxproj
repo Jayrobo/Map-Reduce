@@ -110,6 +110,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FourPieces.cpp" />
     <ClCompile Include="Word_Count.cpp" />
   </ItemGroup>
   <ItemGroup>
