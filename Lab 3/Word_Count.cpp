@@ -4,6 +4,8 @@
 #include <map>
 #include <iomanip>
 #include <set>
+//#include "FourPieces.h"
+#include <vector>
 
 
 using namespace std;
@@ -121,9 +123,11 @@ void First_Word_Count()
 int main()
 {
 	cout << "Please input the input file name:";
-	First_Word_Count();
+	//First_Word_Count();
+	//cout << "done";
 
-	cout << "done";
+	vector<key_val> content;
+	content = inputter("test.txt");
 
 	system("pause");
 	return 0;
