@@ -73,6 +73,7 @@ vector<key_val> inputter(string filename)
 		string temp;
 		input_file >> temp;
 
+
 		for (int i = 0; i < temp.size(); ++i)
 		{
 			temp[i] = tolower(temp[i]); //convert everything into lower cases
@@ -105,8 +106,10 @@ vector<key_val> inputter(string filename)
 			content.push_back(key_val());
 
 			content[word_count].key = temp;
+			content[word_count].value = 0;
+			word_count = word_count + 1;
 		}
 	}
-
+	return content;
 	input_file.close();
 }

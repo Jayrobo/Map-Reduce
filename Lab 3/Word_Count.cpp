@@ -4,7 +4,7 @@
 #include <map>
 #include <iomanip>
 #include <set>
-//#include "FourPieces.h"
+#include "FourPieces.h"
 #include <vector>
 
 
@@ -80,10 +80,10 @@ void First_Word_Count()
 		word_count++;
 	}
 
-	map<string, int> reduced_content;
+	std::map<string, int> reduced_content;
 	string current_content = "a";
 	int similar_count = 1; //since its registered in map, it means the least count it will have is 1
-	for (map<string, int>::iterator it = content.begin(); it != content.end(); it++)
+	for (std::map<string, int>::iterator it = content.begin(); it != content.end(); it++)
 	{
 		if (it->first != current_content)
 		{
@@ -122,12 +122,12 @@ void First_Word_Count()
 
 int main()
 {
-	cout << "Please input the input file name:";
+	//cout << "Please input the input file name:";
 	//First_Word_Count();
 	//cout << "done";
 
 	vector<key_val> content;
-	content = inputter("test.txt");
+	content = inputter("Text.txt");
 
 	system("pause");
 	return 0;
