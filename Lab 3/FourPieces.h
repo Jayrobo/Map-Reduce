@@ -106,9 +106,11 @@ vector<key_val> inputter(string filename)
 			content.push_back(key_val());
 
 			content[word_count].key = temp;
+			word_count++;
+
 		}
 	}
-	return content;
+
 	input_file.close();
 	return content;
 }
@@ -122,15 +124,15 @@ key_val mapper(string str)
 }
 
 
-key_val reduce(key_val collection)
-{
+//key_val reduce(key_val collection)
+//{
 
 
-}
+//}
 
 void outputter(vector<key_val> collection)
 {
-	for (int i = 0; i < content.size(); i++)
+	for (int i = 0; i < collection.size(); i++)
 	{
 		cout << left << setw(30) << collection[i].key << "  " << collection[i].value << endl;
 	}
