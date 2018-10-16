@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 
+
 using namespace std;
 
 
@@ -23,6 +24,7 @@ struct key_val
 };
 
 vector<key_val> content;
+int word_count = 0; //global counter
 //------------------------------------------------------------//
 //					Function Declearation					  //
 //------------------------------------------------------------//
@@ -42,7 +44,7 @@ vector<key_val> inputter(string filename);
 //map must not return void
 //map returns a single key-value pair
 //map has single input
-key_val map(string str);
+key_val mapper(string str);
 
 /*3*/
 //reduce must not return void
@@ -62,7 +64,6 @@ void outputter(key_val collection);
 //---------------------------------------------------------------------------//
 vector<key_val> inputter(string filename)
 {
-	int word_count = 0;
 
 	ifstream input_file;
 	input_file.open(filename);
@@ -103,13 +104,26 @@ vector<key_val> inputter(string filename)
 
 			//** https://stackoverflow.com/questions/8067338/vector-of-structs-initialization  **//
 			//Push back new key_val struct created with default constructor.
-			content.push_back(key_val());
 
+			content.push_back(key_val());
 			content[word_count].key = temp;
-			content[word_count].value = 0;
-			word_count = word_count + 1;
+			word_count++;
 		}
 	}
-	return content;
 	input_file.close();
+	return content;
+}
+
+key_val mapper(string str) {
+	key_val pair;
+	pair.key = str;
+	pair.value = 1;
+	return pair;
+}
+
+void outputter(vector<key_val> collection) {
+	for (int i = 0; i <collection.size(); i++) {
+		cout << left << setw(30) << collection[i].key << collection[i].value << endl;
+	}
+		
 }

@@ -126,8 +126,29 @@ int main()
 	//First_Word_Count();
 	//cout << "done";
 
+	//inputter
 	vector<key_val> content;
 	content = inputter("Text.txt");
+	for (int i = 0; i < word_count; i++) {
+		cout << content[i].key << "    " << i <<  endl;
+	}
+	//mapper - can be split across multiple threads by sliiting content and 
+	// allocating work to the different threads
+
+	//mapped_pairs.resize(word_count);
+	for (int i = 0; i < word_count; i++) {
+		content[i]=mapper(content[i].key); 
+	}
+	/*for (int i = ) {
+		
+	}*/ 
+
+	//reducer
+	//group same keys anad pass into reducer- return one key-value pair
+	//vector<key_val> reduced_pairs;
+
+	//outputter
+	//print everything out
 
 	system("pause");
 	return 0;
