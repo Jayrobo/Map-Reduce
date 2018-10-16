@@ -124,11 +124,11 @@ key_val mapper(string str)
 }
 
 
-//key_val reduce(key_val collection)
-//{
-
-
-//}
+key_val reduce(key_val collection)
+{
+	collection.value = collection.value + 1;
+	return collection;
+}
 
 void outputter(vector<key_val> collection)
 {

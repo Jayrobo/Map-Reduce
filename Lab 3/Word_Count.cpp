@@ -6,13 +6,14 @@
 #include <set>
 #include "FourPieces.h"
 #include <vector>
+#include <thread>
 
 
 using namespace std;
 
-//reference material http://www.techiedelight.com/sort-map-values-cpp/
 struct comp
 {
+	//reference material http://www.techiedelight.com/sort-map-values-cpp/
 	template<typename T>
 	bool operator()(const T& left, const T& right) const
 	{
@@ -120,6 +121,17 @@ void First_Word_Count()
 }
 
 
+//-----------------------------------------------------------------------------------//
+//									Generic Part									 //
+//-----------------------------------------------------------------------------------//
+void Second_Word_Count(vector<key_val> content)
+{
+	for (int i = 0; i < content.size(); i++)
+		content[i] = mapper(content[i].key);
+
+	cout << "now doing a thread" << endl;
+}
+
 int main()
 {
 	//cout << "Please input the input file name:";
@@ -129,12 +141,32 @@ int main()
 	vector<key_val> content;
 	content = inputter("text.txt");
 
+	//map the content
 	for (int i = 0; i < content.size(); i++)
 	{
 		content[i] = mapper(content[i].key);
 	}
 
-	outputter(content);
+
+	vector<key_val> content_odd;
+	int num_odd = 0;
+	for (int i = 1; i < content.size(); i = i + 2)
+	{
+		cout << content[i].key << endl;
+		content_odd.push_back(key_val());
+		content_odd[num_odd] = content[i];
+		num_odd++;
+	}
+
+	thread index_odd(Second_Word_Count, content_odd);
+
+	index_odd.join();
+
+	//outputter(content);
+
+	//string can be directly compared
+	if (content[5].key == content[7].key)
+		cout << "IT WORKS" << endl;
 
 	system("pause");
 	return 0;
