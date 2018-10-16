@@ -80,10 +80,10 @@ void First_Word_Count()
 		word_count++;
 	}
 
-	map<string, int> reduced_content;
+	std::map<string, int> reduced_content;
 	string current_content = "a";
 	int similar_count = 1; //since its registered in map, it means the least count it will have is 1
-	for (map<string, int>::iterator it = content.begin(); it != content.end(); it++)
+	for (std::map<string, int>::iterator it = content.begin(); it != content.end(); it++)
 	{
 		if (it->first != current_content)
 		{
@@ -122,25 +122,12 @@ void First_Word_Count()
 
 int main()
 {
-	cout << "Please input the input file name:";
+	//cout << "Please input the input file name:";
 	//First_Word_Count();
 	//cout << "done";
 
 	vector<key_val> content;
-	content = inputter("text.txt");
-
-	//for (int i = 0; i < content.size(); i++)
-	//{
-	//	cout << content[i].key << "  " << endl;
-	//}
-	//cout << content.size();
-
-	for (int i = 0; i < content.size(); i++)
-	{
-		content[i] = mapper(content[i].key);
-	}
-	
-	outputter(content);
+	content = inputter("test.txt");
 
 	system("pause");
 	return 0;
