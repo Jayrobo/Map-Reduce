@@ -4,7 +4,7 @@
 #include <map>
 #include <iomanip>
 #include <set>
-//#include "FourPieces.h"
+#include "FourPieces.h"
 #include <vector>
 
 
@@ -127,7 +127,20 @@ int main()
 	//cout << "done";
 
 	vector<key_val> content;
-	content = inputter("test.txt");
+	content = inputter("text.txt");
+
+	//for (int i = 0; i < content.size(); i++)
+	//{
+	//	cout << content[i].key << "  " << endl;
+	//}
+	//cout << content.size();
+
+	for (int i = 0; i < content.size(); i++)
+	{
+		content[i] = mapper(content[i].key);
+	}
+	
+	outputter(content);
 
 	system("pause");
 	return 0;

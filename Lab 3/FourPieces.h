@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <map>
+#include <iomanip>
 
 using namespace std;
 
@@ -42,7 +42,7 @@ vector<key_val> inputter(string filename);
 //map must not return void
 //map returns a single key-value pair
 //map has single input
-key_val map(string str);
+key_val mapper(string str);
 
 /*3*/
 //reduce must not return void
@@ -55,7 +55,7 @@ key_val reduce(key_val collection);
 
 /*4*/
 //outputter takes key-value pair and outputs to the screen
-void outputter(key_val collection);
+void outputter(vector<key_val> collection);
 
 //---------------------------------------------------------------------------//
 //							  Implementation								 //
@@ -105,8 +105,33 @@ vector<key_val> inputter(string filename)
 			content.push_back(key_val());
 
 			content[word_count].key = temp;
+			word_count++;
 		}
 	}
 
 	input_file.close();
+	return content;
+}
+
+key_val mapper(string str)
+{
+	key_val pair;
+	pair.key = str;
+	pair.value = 1;
+	return pair;
+}
+
+
+key_val reduce(key_val collection)
+{
+
+
+}
+
+void outputter(vector<key_val> collection)
+{
+	for (int i = 0; i < content.size(); i++)
+	{
+		cout << left << setw(30) << collection[i].key << "  " << collection[i].value << endl;
+	}
 }
