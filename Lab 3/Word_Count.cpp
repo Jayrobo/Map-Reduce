@@ -6,13 +6,14 @@
 #include <set>
 #include "FourPieces.h"
 #include <vector>
+#include <thread>
 
 
 using namespace std;
 
-//reference material http://www.techiedelight.com/sort-map-values-cpp/
 struct comp
 {
+	//reference material http://www.techiedelight.com/sort-map-values-cpp/
 	template<typename T>
 	bool operator()(const T& left, const T& right) const
 	{
@@ -120,35 +121,52 @@ void First_Word_Count()
 }
 
 
+//-----------------------------------------------------------------------------------//
+//									Generic Part									 //
+//-----------------------------------------------------------------------------------//
+void Second_Word_Count(vector<key_val> content)
+{
+	for (int i = 0; i < content.size(); i++)
+		content[i] = mapper(content[i].key);
+
+	cout << "now doing a thread" << endl;
+}
+
 int main()
 {
 	//cout << "Please input the input file name:";
 	//First_Word_Count();
 	//cout << "done";
 
-	//inputter
 	vector<key_val> content;
-	content = inputter("Text.txt");
-	for (int i = 0; i < word_count; i++) {
-		cout << content[i].key << "    " << i <<  endl;
+	content = inputter("text.txt");
+
+	//map the content
+	for (int i = 0; i < content.size(); i++)
+	{
+		content[i] = mapper(content[i].key);
 	}
-	//mapper - can be split across multiple threads by sliiting content and 
-	// allocating work to the different threads
 
-	//mapped_pairs.resize(word_count);
-	for (int i = 0; i < word_count; i++) {
-		content[i]=mapper(content[i].key); 
+
+	vector<key_val> content_odd;
+	int num_odd = 0;
+	for (int i = 1; i < content.size(); i = i + 2)
+	{
+		cout << content[i].key << endl;
+		content_odd.push_back(key_val());
+		content_odd[num_odd] = content[i];
+		num_odd++;
 	}
-	/*for (int i = ) {
-		
-	}*/ 
 
-	//reducer
-	//group same keys anad pass into reducer- return one key-value pair
-	//vector<key_val> reduced_pairs;
+	thread index_odd(Second_Word_Count, content_odd);
 
-	//outputter
-	//print everything out
+	index_odd.join();
+
+	//outputter(content);
+
+	//string can be directly compared
+	if (content[5].key == content[7].key)
+		cout << "IT WORKS" << endl;
 
 	system("pause");
 	return 0;

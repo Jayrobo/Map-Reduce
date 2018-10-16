@@ -2,8 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <map>
-
+#include <iomanip>
 
 using namespace std;
 
@@ -24,7 +23,6 @@ struct key_val
 };
 
 vector<key_val> content;
-int word_count = 0; //global counter
 //------------------------------------------------------------//
 //					Function Declearation					  //
 //------------------------------------------------------------//
@@ -57,13 +55,14 @@ key_val reduce(key_val collection);
 
 /*4*/
 //outputter takes key-value pair and outputs to the screen
-void outputter(key_val collection);
+void outputter(vector<key_val> collection);
 
 //---------------------------------------------------------------------------//
 //							  Implementation								 //
 //---------------------------------------------------------------------------//
 vector<key_val> inputter(string filename)
 {
+	int word_count = 0;
 
 	ifstream input_file;
 	input_file.open(filename);
@@ -104,26 +103,37 @@ vector<key_val> inputter(string filename)
 
 			//** https://stackoverflow.com/questions/8067338/vector-of-structs-initialization  **//
 			//Push back new key_val struct created with default constructor.
-
 			content.push_back(key_val());
+
 			content[word_count].key = temp;
 			word_count++;
+
 		}
 	}
+
 	input_file.close();
 	return content;
 }
 
-key_val mapper(string str) {
+key_val mapper(string str)
+{
 	key_val pair;
 	pair.key = str;
 	pair.value = 1;
 	return pair;
 }
 
-void outputter(vector<key_val> collection) {
-	for (int i = 0; i <collection.size(); i++) {
-		cout << left << setw(30) << collection[i].key << collection[i].value << endl;
+
+key_val reduce(key_val collection)
+{
+	collection.value = collection.value + 1;
+	return collection;
+}
+
+void outputter(vector<key_val> collection)
+{
+	for (int i = 0; i < collection.size(); i++)
+	{
+		cout << left << setw(30) << collection[i].key << "  " << collection[i].value << endl;
 	}
-		
 }
