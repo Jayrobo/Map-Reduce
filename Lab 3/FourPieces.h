@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <iomanip>
+#include <algorithm>
 
 using namespace std;
 
@@ -112,6 +113,7 @@ vector<key_val> inputter(string filename)
 	}
 
 	input_file.close();
+	//cout << word_count << endl;
 	return content;
 }
 
@@ -132,6 +134,11 @@ key_val reduce(key_val collection)
 
 void outputter(vector<key_val> collection)
 {
+	sort(collection.begin(), collection.end(), [](const key_val lhs, const key_val rhs)
+	{
+		return lhs.value > rhs.value;
+	});
+
 	for (int i = 0; i < collection.size(); i++)
 	{
 		cout << left << setw(30) << collection[i].key << "  " << collection[i].value << endl;
