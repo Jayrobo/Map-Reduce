@@ -132,23 +132,29 @@ void First_Word_Count()
 //-----------------------------------------------------------------------------------//
 mutex locker;
 int all_content_size = 0;
-condition_variable Done;
+condition_variable cv;
+bool ready = false;
 void Second_Word_Count(vector<key_val> content)
 {
 	for (int i = 0; i < content.size(); i++)
 		content[i] = mapper(content[i].key);
 
 	int pos = 0;
+	
 	while (pos < content.size())
 	{
 		
-		if (all_content_size== 0) //input the fist structure into the vector
+		if (all_content_size == 0) //input the fist structure into the vector
 		{
-			locker.lock();
+			//unique_lock<mutex> Locked(locker);
+			//cv.wait(Locked, [] {return ready; });
 			all_content.push_back(key_val());
 			all_content[all_content_size] = content[pos];
 			all_content_size++;
-			locker.unlock();
+			//ready = true;
+			//Locked.unlock();
+			//cv.notify_one();
+
 			break;
 		}
 		else
@@ -157,21 +163,31 @@ void Second_Word_Count(vector<key_val> content)
 			{
 				if((i == all_content_size-1) && (all_content[i].key != content[pos].key))
 				{
-					locker.lock();
+					//unique_lock<mutex> Locked(locker);
+					//cv.wait(Locked, [] {return ready; });
 					all_content.push_back(key_val());
 					all_content[all_content_size] = content[pos];
 					all_content_size++;
-					locker.unlock();
+
+					//ready = true;
+					//Locked.unlock();
+					//cv.notify_one();
 					break;
 				}
 				else if (all_content[i].key == content[pos].key) //if there is the same key then you can break from the loop
 				{	
-					locker.lock();
+					//unique_lock<mutex> Locked(locker);
+					//cv.wait(Locked, [] {return ready; });
 					all_content[i] = reduce(all_content[i]);
-					locker.unlock();
+					
+					//ready = true;
+					//Locked.unlock();
+					//cv.notify_one();
 					break; 
 				}
+				//ready = false;
 			}
+			
 		}
 
 		pos++; //accessing the next vector content of the thread
@@ -225,6 +241,7 @@ int main()
 		num++;
 	}
 
+	//check if even and odd are partition properly
 	/*for (int i = 0; i < content_odd.size(); i++)
 	{
 		cout << left << setw(30) << content_odd[i].key << "   " << content_even[i].key << endl;
@@ -234,9 +251,10 @@ int main()
 	thread index_odd(Second_Word_Count, content_odd);
 	thread index_even(Second_Word_Count, content_even);
 
+	
 	index_odd.join();
-	this_thread::sleep_for(1s);
 	index_even.join();
+	
 
 	outputter(all_content);
 
