@@ -8,7 +8,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
-#include <condition_variable>
+//#include <condition_variable>
 
 
 using namespace std;
@@ -88,7 +88,8 @@ void First_Word_Count()
 	std::map<string, int> reduced_content;
 	string current_content = "a";
 	int similar_count = 1; //since its registered in map, it means the least count it will have is 1
-	for (std::map<string, int>::iterator it = content.begin(); it == content.end(); it++)
+	std::map<string, int>::iterator it = content.begin();
+	for (it; it != content.end(); it++)
 	{
 		if (it->first != current_content)
 		{
@@ -107,7 +108,10 @@ void First_Word_Count()
 			similar_count++; //adding one for similar count
 			//cout << current_content << endl;
 		}
+			
 	}
+	//since "your" was the last key that did not get processed
+	reduced_content.insert(pair<string, int>(current_content, similar_count));
 	
 	set<pair<string, int>, comp> set(reduced_content.begin(), reduced_content.end());
 	
@@ -123,7 +127,7 @@ void First_Word_Count()
 
 
 	input_file.close();
-	cout << word_count << endl;
+	//cout << word_count << endl;
 }
 
 
@@ -132,7 +136,8 @@ void First_Word_Count()
 //-----------------------------------------------------------------------------------//
 mutex locker;
 int all_content_size = 0;
-condition_variable cv;
+//condition_variable cv;
+//unique_lock<mutex> Locked(locker);
 bool ready = false;
 void Second_Word_Count(vector<key_val> content)
 {
@@ -143,46 +148,54 @@ void Second_Word_Count(vector<key_val> content)
 	
 	while (pos < content.size())
 	{
-		
-		if (all_content_size == 0) //input the fist structure into the vector
+		//cout << "now doing a thread" << endl;
+		unique_lock<mutex> Locked(locker);
+		//cout << "Locked is Created" << endl;
+		if (all_content.size() == 0) //input the fist structure into the vector
 		{
 			//unique_lock<mutex> Locked(locker);
-			//cv.wait(Locked, [] {return ready; });
+			//cv.wait(Locked);
+			//Locked.lock();
+			//cout << "Locked is DEAD if this output twice" << endl;
 			all_content.push_back(key_val());
 			all_content[all_content_size] = content[pos];
 			all_content_size++;
 			//ready = true;
 			//Locked.unlock();
 			//cv.notify_one();
+			//cout << "First Word is Done" << endl;
 
-			break;
+			//break;
 		}
 		else
 		{
+			//cout << "Second word starts from now" << endl;
 			for (int i = 0; i < all_content_size; i++)
 			{
 				if((i == all_content_size-1) && (all_content[i].key != content[pos].key))
 				{
 					//unique_lock<mutex> Locked(locker);
-					//cv.wait(Locked, [] {return ready; });
+					//cout << "Is the lock dead???" << endl;
+					//cv.wait(Locked);
+					//Locked.lock();
 					all_content.push_back(key_val());
 					all_content[all_content_size] = content[pos];
 					all_content_size++;
 
-					//ready = true;
 					//Locked.unlock();
 					//cv.notify_one();
+					//cout << "Proceed with second word and so on...." << endl;
 					break;
 				}
 				else if (all_content[i].key == content[pos].key) //if there is the same key then you can break from the loop
 				{	
 					//unique_lock<mutex> Locked(locker);
-					//cv.wait(Locked, [] {return ready; });
+					//cv.wait(Locked);
+					//Locked.lock();
 					all_content[i] = reduce(all_content[i]);
-					
-					//ready = true;
 					//Locked.unlock();
 					//cv.notify_one();
+					//cout << "Found the same key, add them up" << endl;
 					break; 
 				}
 				//ready = false;
@@ -192,15 +205,14 @@ void Second_Word_Count(vector<key_val> content)
 
 		pos++; //accessing the next vector content of the thread
 	}
-	cout << "now doing a thread" << endl;
 }
 
 
 
 int main()
 {
-	//cout << "Please input the input file name:";
-	//First_Word_Count();
+	cout << "Please input the input file name:";
+	First_Word_Count();
 	//cout << "done";
 
 	vector<key_val> content;
@@ -256,7 +268,7 @@ int main()
 	index_even.join();
 	
 
-	outputter(all_content);
+	//outputter(all_content);
 
 	//cout << content_even.size() + content_odd.size() << "     " << content.size()<< endl;
 	//string can be directly compared
