@@ -7,9 +7,13 @@
 #include "FourPieces.h"
 #include <vector>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 
 
 using namespace std;
+//for holding the multithreaded content
+vector<key_val> all_content;
 
 struct comp
 {
@@ -111,9 +115,10 @@ void First_Word_Count()
 	//	cout << left << setw(30) << it->first << it->second << endl;
 	//for (map<string,int>::iterator it = reduced_content.begin(); it != reduced_content.end(); it++)
 	//	cout << left << setw(30) << it->first << it->second << endl;
+	int i = 0;
 
 	for (auto const &pair: set) //tried to manually produce the auto type but idk how
-		cout << left << setw(30) << pair.first << pair.second << endl;
+		cout << left << setw(30) << pair.first << pair.second << "  " <<i++ <<endl;
 	//cout << content << " " << word_count <<endl;
 
 
@@ -124,18 +129,56 @@ void First_Word_Count()
 //-----------------------------------------------------------------------------------//
 //									Generic Part									 //
 //-----------------------------------------------------------------------------------//
+mutex locker;
+int all_content_size = 0;
+condition_variable Done;
 void Second_Word_Count(vector<key_val> content)
 {
 	for (int i = 0; i < content.size(); i++)
 		content[i] = mapper(content[i].key);
 
+	int pos = 0;
+	while (pos < content.size())
+	{
+		unique_lock<mutex> Lock_release(locker);
+		if (all_content_size== 0) //input the fist structure into the vector
+		{
+			all_content.push_back(key_val());
+			all_content[all_content_size] = content[pos];
+			all_content_size++;
+			break;
+		}
+		else
+		{
+			for (int i = 0; i < all_content_size; i++)
+			{
+				if((i == all_content_size-1) && (all_content[i].key != content[pos].key))
+				{
+					all_content.push_back(key_val());
+					all_content[all_content_size] = content[pos];
+					all_content_size++;
+					break;
+				}
+				else if (all_content[i].key == content[pos].key) //if there is the same key then you can break from the loop
+				{	
+					all_content[i] = reduce(all_content[i]);
+					break; 
+				}
+			}
+		}
+		Lock_release.unlock();
+		Done.notify_one();
+		pos++; //accessing the next vector content of the thread
+	}
 	cout << "now doing a thread" << endl;
 }
 
+
+
 int main()
 {
-	//cout << "Please input the input file name:";
-	//First_Word_Count();
+	cout << "Please input the input file name:";
+	First_Word_Count();
 	//cout << "done";
 
 	vector<key_val> content;
@@ -148,25 +191,36 @@ int main()
 	}
 
 
-	vector<key_val> content_odd;
-	int num_odd = 0;
-	for (int i = 1; i < content.size(); i = i + 2)
+	vector<key_val> content_odd, content_even;
+	int num = 0;
+	for (int i = 0; i < content.size(); i++)
 	{
-		cout << content[i].key << endl;
-		content_odd.push_back(key_val());
-		content_odd[num_odd] = content[i];
-		num_odd++;
+		if (i + 1 >= content.size())
+		{
+			break;
+		}
+		else
+		{
+			content_odd.push_back(key_val());
+			content_odd[num] = content[i + 1];
+		}
+
+		content_even.push_back(key_val());
+		content_even[num] = content[i];
+		num++;
 	}
 
 	thread index_odd(Second_Word_Count, content_odd);
+	thread index_even(Second_Word_Count, content_even);
 
 	index_odd.join();
+	index_even.join();
 
-	//outputter(content);
+	outputter(all_content);
 
 	//string can be directly compared
-	if (content[5].key == content[7].key)
-		cout << "IT WORKS" << endl;
+	//if (content[5].key == content[7].key)
+		cout << "IT WORKS with the all_content size: " << all_content.size() << endl;
 
 	system("pause");
 	return 0;
