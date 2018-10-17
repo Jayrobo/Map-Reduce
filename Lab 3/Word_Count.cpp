@@ -225,7 +225,7 @@ int main()
 		else
 		{
 			content_odd.push_back(key_val());
-			content_odd[num] = content[i + 1];
+			content_odd[num] = content[(i + 1)];
 		}
 
 		if (i >= content.size())
