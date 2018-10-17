@@ -88,7 +88,8 @@ void First_Word_Count()
 	std::map<string, int> reduced_content;
 	string current_content = "a";
 	int similar_count = 1; //since its registered in map, it means the least count it will have is 1
-	for (std::map<string, int>::iterator it = content.begin(); it == content.end(); it++)
+	std::map<string, int>::iterator it = content.begin();
+	for (it; it != content.end(); it++)
 	{
 		if (it->first != current_content)
 		{
@@ -107,7 +108,10 @@ void First_Word_Count()
 			similar_count++; //adding one for similar count
 			//cout << current_content << endl;
 		}
+			
 	}
+	//since "your" was the last key that did not get processed
+	reduced_content.insert(pair<string, int>(current_content, similar_count));
 	
 	set<pair<string, int>, comp> set(reduced_content.begin(), reduced_content.end());
 	
@@ -123,7 +127,7 @@ void First_Word_Count()
 
 
 	input_file.close();
-	cout << word_count << endl;
+	//cout << word_count << endl;
 }
 
 
@@ -207,8 +211,8 @@ void Second_Word_Count(vector<key_val> content)
 
 int main()
 {
-	//cout << "Please input the input file name:";
-	//First_Word_Count();
+	cout << "Please input the input file name:";
+	First_Word_Count();
 	//cout << "done";
 
 	vector<key_val> content;
@@ -264,7 +268,7 @@ int main()
 	index_even.join();
 	
 
-	outputter(all_content);
+	//outputter(all_content);
 
 	//cout << content_even.size() + content_odd.size() << "     " << content.size()<< endl;
 	//string can be directly compared
