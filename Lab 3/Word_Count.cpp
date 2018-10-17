@@ -8,7 +8,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
-#include <condition_variable>
+//#include <condition_variable>
 
 
 using namespace std;
@@ -132,7 +132,8 @@ void First_Word_Count()
 //-----------------------------------------------------------------------------------//
 mutex locker;
 int all_content_size = 0;
-condition_variable cv;
+//condition_variable cv;
+//unique_lock<mutex> Locked(locker);
 bool ready = false;
 void Second_Word_Count(vector<key_val> content)
 {
@@ -143,46 +144,54 @@ void Second_Word_Count(vector<key_val> content)
 	
 	while (pos < content.size())
 	{
-		
-		if (all_content_size == 0) //input the fist structure into the vector
+		//cout << "now doing a thread" << endl;
+		unique_lock<mutex> Locked(locker);
+		//cout << "Locked is Created" << endl;
+		if (all_content.size() == 0) //input the fist structure into the vector
 		{
 			//unique_lock<mutex> Locked(locker);
-			//cv.wait(Locked, [] {return ready; });
+			//cv.wait(Locked);
+			//Locked.lock();
+			//cout << "Locked is DEAD if this output twice" << endl;
 			all_content.push_back(key_val());
 			all_content[all_content_size] = content[pos];
 			all_content_size++;
 			//ready = true;
 			//Locked.unlock();
 			//cv.notify_one();
+			//cout << "First Word is Done" << endl;
 
-			break;
+			//break;
 		}
 		else
 		{
+			//cout << "Second word starts from now" << endl;
 			for (int i = 0; i < all_content_size; i++)
 			{
 				if((i == all_content_size-1) && (all_content[i].key != content[pos].key))
 				{
 					//unique_lock<mutex> Locked(locker);
-					//cv.wait(Locked, [] {return ready; });
+					//cout << "Is the lock dead???" << endl;
+					//cv.wait(Locked);
+					//Locked.lock();
 					all_content.push_back(key_val());
 					all_content[all_content_size] = content[pos];
 					all_content_size++;
 
-					//ready = true;
 					//Locked.unlock();
 					//cv.notify_one();
+					//cout << "Proceed with second word and so on...." << endl;
 					break;
 				}
 				else if (all_content[i].key == content[pos].key) //if there is the same key then you can break from the loop
 				{	
 					//unique_lock<mutex> Locked(locker);
-					//cv.wait(Locked, [] {return ready; });
+					//cv.wait(Locked);
+					//Locked.lock();
 					all_content[i] = reduce(all_content[i]);
-					
-					//ready = true;
 					//Locked.unlock();
 					//cv.notify_one();
+					//cout << "Found the same key, add them up" << endl;
 					break; 
 				}
 				//ready = false;
@@ -192,7 +201,6 @@ void Second_Word_Count(vector<key_val> content)
 
 		pos++; //accessing the next vector content of the thread
 	}
-	cout << "now doing a thread" << endl;
 }
 
 
